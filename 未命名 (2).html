@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Write Here, Write Now | Share Your Creative Works</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Georgia:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Custom Tailwind Config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        dark: '#000000',
+                        gray: '#333333',
+                        lightgray: '#555555',
+                        yellow: '#FFD700',
+                        white: '#FFFFFF'
+                    },
+                    fontFamily: {
+                        georgia: ['Georgia', 'serif'],
+                        inter: ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Custom Styles -->
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto { content-visibility: auto; }
+            .text-shadow-sm { text-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+            .transition-all-300 { transition: all 300ms ease-in-out; }
+            /* 2 units right shift for placeholder text (1rem = 2 units in Tailwind) */
+            .search-input-padding { padding-left: 2rem !important; } 
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #000000;
+            color: #FFFFFF;
+        }
+        
+        .work-content {
+            font-family: 'Georgia', serif;
+            line-height: 1.8;
+        }
+        
+        .nav-link {
+            @apply px-4 py-2 hover:text-yellow font-medium transition-all-300 hover:bg-lightgray/10 rounded-md;
+        }
+        
+        .btn-primary {
+            @apply bg-yellow text-dark px-6 py-2 rounded-md hover:bg-yellow/90 transition-all-300 font-medium;
+        }
+        
+        .btn-secondary {
+            @apply bg-lightgray text-white px-6 py-2 rounded-md hover:bg-lightgray/90 transition-all-300 font-medium;
+        }
+        
+        .btn-outline {
+            @apply border border-white text-white px-6 py-2 rounded-md hover:bg-lightgray/10 transition-all-300 font-medium;
+        }
+        
+        .card {
+            @apply bg-gray rounded-lg shadow-md hover:shadow-lg transition-all-300 p-6 mb-6;
+        }
+        
+        .form-input {
+            @apply w-full p-3 border border-lightgray/30 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow/30 focus:border-yellow bg-lightgray/10 text-white;
+        }
+        
+        .badge {
+            @apply px-2 py-1 rounded-full text-xs font-medium;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+    <!-- Navigation Bar -->
+    <header class="bg-gray shadow-sm sticky top-0 z-50">
+        <nav class="container mx-auto px-4 py-4 flex flex-wrap items-center justify-between">
+            <a href="#" class="flex items-center space-x-2">
+                <i class="fa fa-pencil-square-o text-yellow text-2xl"></i>
+                <span class="text-xl font-bold text-yellow">Write Here, Write Now</span>
+            </a>
+            
+            <!-- Desktop Navigation -->
+            <div class="hidden md:flex items-center space-x-2" id="main-nav">
+                <a href="#home" class="nav-link">Home</a>
+                
+                <!-- Submit Work Link (Triggers Login if not logged in) -->
+                <a href="#submit-work" class="nav-link submit-work-trigger">Submit Work</a>
+                
+                <!-- Auth Links -->
+                <div id="auth-links">
+                    <a href="#login" class="nav-link">Login</a>
+                    <a href="#register" class="btn-primary">Register</a>
+                </div>
+                
+                <!-- Admin Menu (Hidden by default) -->
+                <div id="admin-reviewer-menu" class="hidden group relative">
+                    <a href="#" class="nav-link flex items-center">
+                        Admin Panel
+                        <i class="fa fa-chevron-down ml-1 text-xs"></i>
+                    </a>
+                    <div class="absolute left-0 top-full mt-1 hidden group-hover:block bg-gray shadow-lg rounded-md w-48 z-10">
+                        <a href="#review-queue" class="block px-4 py-2 hover:bg-lightgray/10">Review Queue</a>
+                        <a href="#user-management" class="block px-4 py-2 hover:bg-lightgray/10">User Management</a>
+                        <a href="#content-management" class="block px-4 py-2 hover:bg-lightgray/10">Content Management</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Mobile Menu Button -->
+            <button id="mobile-menu-btn" class="md:hidden text-yellow text-xl">
+                <i class="fa fa-bars"></i>
+            </button>
+        </nav>
+        
+        <!-- Mobile Navigation -->
+        <div id="mobile-menu" class="md:hidden hidden bg-gray border-t border-lightgray/10">
+            <div class="container mx-auto px-4 py-2 flex flex-col space-y-2">
+                <a href="#home" class="px-4 py-2 hover:bg-lightgray/10 rounded-md">Home</a>
+                <a href="#submit-work" class="px-4 py-2 hover:bg-lightgray/10 rounded-md submit-work-trigger">Submit Work</a>
+                <div id="mobile-auth-links">
+                    <a href="#login" class="px-4 py-2 hover:bg-lightgray/10 rounded-md">Login</a>
+                    <a href="#register" class="px-4 py-2 bg-yellow text-dark rounded-md">Register</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow container mx-auto px-4 py-8">
+        <!-- Home Section -->
+        <section id="home" class="py-16 text-center">
+            <h1 class="text-4xl md:text-5xl font-bold mb-6 text-yellow">Write Here, Write Now</h1>
+            <p class="text-lg md:text-xl text-white max-w-3xl mx-auto mb-8">
+                A sanctuary for creative writers to share, discover, and connect through the power of words.
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <a href="#browse" class="btn-primary">Explore Works</a>
+                <a href="#submit-work" class="btn-secondary submit-work-trigger">Share Your Writing</a>
+            </div>
+            
+            <!-- Search Bar (Icon + Placeholder both shifted right 2 units) -->
+            <div class="mt-12 max-w-2xl mx-auto">
+                <div class="relative">
+                    <!-- Placeholder shifted right 2 units (pl-8 = 2rem = 2 units) -->
+                    <input type="text" id="search-input" placeholder="Search works by title, author, or style..." 
+                           class="form-input search-input-padding pr-20 py-3 w-full">
+                    <!-- Icon shifted right 2 units (left-2 instead of left-0) -->
+                    <i class="fa fa-search absolute left-2 top-1/2 -translate-y-1/2 text-white text-lg"></i>
+                    <!-- Search button with proper spacing -->
+                    <button id="search-btn" class="absolute right-3 top-1/2 -translate-y-1/2 bg-yellow text-dark px-5 py-2 rounded-md whitespace-nowrap">
+                        Search
+                    </button>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Browse Works Section (Only Styles) -->
+        <section id="browse" class="py-12">
+            <h2 class="text-3xl font-bold mb-8 text-yellow">Explore Creative Works</h2>
+            
+            <!-- Only Style Category Tabs (Removed all Genre tabs) -->
+            <div class="flex flex-wrap gap-2 mb-8" id="category-tabs">
+                <button class="category-tab btn-primary active" data-category="all">All Works</button>
+                
+                <!-- Only Style Tabs (Removed Genre tabs) -->
+                <button class="category-tab btn-outline" data-category="fiction">Fiction</button>
+                <button class="category-tab btn-outline" data-category="poetry">Poetry</button>
+                <button class="category-tab btn-outline" data-category="creative-nonfiction">Creative Nonfiction</button>
+            </div>
+            
+            <!-- Works Grid (Updated to only show Style badges) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="works-container">
+                <!-- Sample Fiction Work -->
+                <div class="card" data-style="fiction">
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 class="text-xl font-bold text-yellow">The Hidden Key</h3>
+                        <span class="badge bg-lightgray/20 text-white">Approved</span>
+                    </div>
+                    <div class="mb-3 flex flex-wrap gap-2">
+                        <span class="badge bg-lightgray/20 text-yellow">Fiction</span>
+                        <span class="text-white text-sm">By Regular User</span>
+                    </div>
+                    <p class="text-white mb-4 line-clamp-3">A mysterious key leads to a decades-old secret that changes everything for the small town detective.</p>
+                    <button class="btn-outline view-work-btn">Read Full Work</button>
+                </div>
+                
+                <!-- Sample Poetry Work -->
+                <div class="card" data-style="poetry">
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 class="text-xl font-bold text-yellow">Whispers of Love</h3>
+                        <span class="badge bg-lightgray/20 text-white">Approved</span>
+                    </div>
+                    <div class="mb-3 flex flex-wrap gap-2">
+                        <span class="badge bg-lightgray/20 text-yellow">Poetry</span>
+                        <span class="text-white text-sm">By Regular User</span>
+                    </div>
+                    <p class="text-white mb-4 line-clamp-3">A collection of poems about finding love in unexpected places and the beauty of human connection.</p>
+                    <button class="btn-outline view-work-btn">Read Full Work</button>
+                </div>
+                
+                <!-- Sample Creative Nonfiction Work -->
+                <div class="card" data-style="creative-nonfiction">
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 class="text-xl font-bold text-yellow">Echoes of War</h3>
+                        <span class="badge bg-lightgray/20 text-white">Approved</span>
+                    </div>
+                    <div class="mb-3 flex flex-wrap gap-2">
+                        <span class="badge bg-lightgray/20 text-yellow">Creative Nonfiction</span>
+                        <span class="text-white text-sm">By Regular User</span>
+                    </div>
+                    <p class="text-white mb-4 line-clamp-3">A true story of a soldier's journey through WWII and the lasting impact on his family for generations.</p>
+                    <button class="btn-outline view-work-btn">Read Full Work</button>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Modals -->
+        <div id="login-modal" class="fixed inset-0 bg-black/80 flex items-center justify-center z-50 hidden">
+            <div class="bg-gray rounded-lg shadow-xl w-full max-w-md p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-xl font-bold text-yellow">Login to Your Account</h3>
+                    <button id="close-login-modal" class="text-white hover:text-yellow">
+                        <i class="fa fa-times text-xl"></i>
+                    </button>
+                </div>
+                <form id="login-form">
+                    <div class="mb-4">
+                        <label for="login-email" class="block text-white mb-2 font-medium">Email Address</label>
+                        <input type="email" id="login-email" name="login-email" required 
+                               class="form-input" placeholder="your@email.com">
+                    </div>
+                    <div class="mb-6">
+                        <label for="login-password" class="block text-white mb-2 font-medium">Password</label>
+                        <input type="password" id="login-password" name="login-password" required 
+                               class="form-input" placeholder="••••••••">
+                    </div>
+                    <div class="flex flex-col space-y-4">
+                        <button type="submit" class="btn-primary">Login</button>
+                        <p class="text-center text-white">
+                            Don't have an account? <a href="#register" id="switch-to-register" class="text-yellow hover:underline">Register</a>
+                        </p>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <div id="register-modal" class="fixed inset-0 bg-black/80 flex items-center justify-center z-50 hidden">
+            <div class="bg-gray rounded-lg shadow-xl w-full max-w-md p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-xl font-bold text-yellow">Create Your Account</h3>
+                    <button id="close-register-modal" class="text-white hover:text-yellow">
+                        <i class="fa fa-times text-xl"></i>
+                    </button>
+                </div>
+                <form id="register-form">
+                    <div class="mb-4">
+                        <label for="register-name" class="block text-white mb-2 font-medium">Full Name</label>
+                        <input type="text" id="register-name" name="register-name" required 
+                               class="form-input" placeholder="John Doe">
+                    </div>
+                    <div class="mb-4">
+                        <label for="register-email" class="block text-white mb-2 font-medium">Email Address</label>
+                        <input type="email" id="register-email" name="register-email" required 
+                               class="form-input" placeholder="your@email.com">
+                    </div>
+                    <div class="mb-4">
+                        <label for="register-password" class="block text-white mb-2 font-medium">Password</label>
+                        <input type="password" id="register-password" name="register-password" required 
+                               class="form-input" placeholder="••••••••" minlength="8">
+                    </div>
+                    <div class="mb-6">
+                        <label for="register-confirm-password" class="block text-white mb-2 font-medium">Confirm Password</label>
+                        <input type="password" id="register-confirm-password" name="register-confirm-password" required 
+                               class="form-input" placeholder="••••••••">
+                    </div>
+                    <div class="flex flex-col space-y-4">
+                        <button type="submit" class="btn-primary">Register</button>
+                        <p class="text-center text-white">
+                            Already have an account? <a href="#login" id="switch-to-login" class="text-yellow hover:underline">Login</a>
+                        </p>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <div id="work-detail-modal" class="fixed inset-0 bg-black/80 flex items-center justify-center z-50 hidden">
+            <div class="bg-gray rounded-lg shadow-xl w-full max-w-3xl max-h-[90vh] overflow-auto p-8">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 id="detail-title" class="text-2xl font-bold text-yellow">Work Title</h3>
+                    <button id="close-detail-modal" class="text-white hover:text-yellow">
+                        <i class="fa fa-times text-xl"></i>
+                    </button>
+                </div>
+                <div class="mb-4 flex flex-wrap gap-2">
+                    <span id="detail-style" class="badge bg-lightgray/20 text-yellow">Style</span>
+                    <span id="detail-author" class="text-white">By Author Name</span>
+                    <span id="detail-date" class="text-white">Published on Date</span>
+                </div>
+                <div id="detail-description" class="mb-6 text-white italic">Work description</div>
+                <div id="detail-content" class="work-content text-white mb-8">Work content</div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer with Custom Spacing (Larger gap between Email Support ↔ FAQ) -->
+    <footer class="bg-gray text-white py-8">
+        <div class="container mx-auto px-4">
+            <!-- Contact & Support Section (Custom Spacing) -->
+            <section class="mb-8">
+                <h2 class="text-2xl font-bold text-yellow mb-6">Contact & Support</h2>
+                <!-- Custom grid with different gaps: 16 between Email-FAQ, 8 between FAQ-Response -->
+                <div class="grid grid-cols-1 md:grid-cols-3">
+                    <!-- Email Support -->
+                    <div class="p-4 md:mr-16">
+                        <h3 class="text-lg font-medium text-yellow mb-3 flex items-center">
+                            <i class="fa fa-envelope-o mr-2"></i> Email Support
+                        </h3>
+                        <p class="text-white">
+                            For detailed inquiries or assistance, reach out to our dedicated support team at 
+                            <a href="mailto:WritehereWritenow2025@outlook.com" class="text-yellow hover:underline">WritehereWritenow2025@outlook.com</a>.
+                        </p>
+                    </div>
+                    
+                    <!-- FAQ Section (smaller gap to Response Time) -->
+                    <div class="p-4 md:mr-8">
+                        <h3 class="text-lg font-medium text-yellow mb-3 flex items-center">
+                            <i class="fa fa-question-circle-o mr-2"></i> FAQ Section
+                        </h3>
+                        <p class="text-white">
+                            Browse our comprehensive FAQ section for answers to common questions about our services and community.
+                            <a href="#faq" class="text-yellow hover:underline ml-1">Visit FAQ</a>
+                        </p>
+                    </div>
+                    
+                    <!-- Response Time Guarantee -->
+                    <div class="p-4">
+                        <h3 class="text-lg font-medium text-yellow mb-3 flex items-center">
+                            <i class="fa fa-clock-o mr-2"></i> Response Time Guarantee
+                        </h3>
+                        <p class="text-white">
+                            Rest assured, we'll respond to your inquiries within 24-48 hours to ensure timely and efficient assistance.
+                        </p>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Original Footer Content -->
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-4 md:mb-0">
+                    <div class="flex items-center space-x-2 mb-2">
+                        <i class="fa fa-pencil-square-o text-yellow text-xl"></i>
+                        <span class="text-xl font-bold text-yellow">Write Here, Write Now</span>
+                    </div>
+                    <p class="text-lightgray">A sanctuary for creative writers</p>
+                </div>
+                <div class="flex space-x-6">
+                    <a href="#" class="text-white hover:text-yellow transition-all-300"><i class="fa fa-twitter"></i></a>
+                    <a href="#" class="text-white hover:text-yellow transition-all-300"><i class="fa fa-facebook"></i></a>
+                    <a href="#" class="text-white hover:text-yellow transition-all-300"><i class="fa fa-instagram"></i></a>
+                    <a href="#" class="text-white hover:text-yellow transition-all-300"><i class="fa fa-linkedin"></i></a>
+                </div>
+            </div>
+            
+            <!-- Copyright -->
+            <div class="border-t border-lightgray/30 mt-6 pt-6 text-center text-lightgray text-sm">
+                <p>&copy; 2024 Write Here, Write Now. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // Global State
+        const state = {
+            currentUser: null,
+            users: JSON.parse(localStorage.getItem('writeHereWriteNowUsers')) || [
+                // Default Admin User
+                {
+                    id: 1,
+                    name: 'Admin User',
+                    email: 'admin@writeherewenow.com',
+                    password: 'admin123',
+                    role: 'admin'
+                },
+                // Regular User
+                {
+                    id: 2,
+                    name: 'Regular User',
+                    email: 'user@writeherewenow.com',
+                    password: 'user123',
+                    role: 'user'
+                }
+            ]
+        };
+
+        // DOM Elements
+        const elements = {
+            // Navigation
+            mobileMenuBtn: document.getElementById('mobile-menu-btn'),
+            mobileMenu: document.getElementById('mobile-menu'),
+            authLinks: document.getElementById('auth-links'),
+            mobileAuthLinks: document.getElementById('mobile-auth-links'),
+            adminReviewerMenu: document.getElementById('admin-reviewer-menu'),
+            submitWorkTriggers: document.querySelectorAll('.submit-work-trigger'),
+            
+            // Modals
+            loginModal: document.getElementById('login-modal'),
+            registerModal: document.getElementById('register-modal'),
+            workDetailModal: document.getElementById('work-detail-modal'),
+            closeLoginModal: document.getElementById('close-login-modal'),
+            closeRegisterModal: document.getElementById('close-register-modal'),
+            closeDetailModal: document.getElementById('close-detail-modal'),
+            switchToRegister: document.getElementById('switch-to-register'),
+            switchToLogin: document.getElementById('switch-to-login'),
+            
+            // Forms
+            loginForm: document.getElementById('login-form'),
+            registerForm: document.getElementById('register-form'),
+            
+            // Content
+            categoryTabs: document.querySelectorAll('.category-tab'),
+            searchInput: document.getElementById('search-input'),
+            searchBtn: document.getElementById('search-btn'),
+            worksContainer: document.getElementById('works-container'),
+            workCards: document.querySelectorAll('.card'),
+            
+            // Detail Modal
+            detailTitle: document.getElementById('detail-title'),
+            detailStyle: document.getElementById('detail-style'),
+            detailAuthor: document.getElementById('detail-author'),
+            detailDate: document.getElementById('detail-date'),
+            detailDescription: document.getElementById('detail-description'),
+            detailContent: document.getElementById('detail-content')
+        };
+
+        // Initialize App
+        function initApp() {
+            // Load saved user
+            const savedUser = localStorage.getItem('writeHereWriteNowCurrentUser');
+            if (savedUser) {
+                state.currentUser = JSON.parse(savedUser);
+                updateUIForLoggedInUser();
+            }
+            
+            // Add event listeners
+            addEventListeners();
+        }
+
+        // Event Listeners
+        function addEventListeners() {
+            // Mobile menu toggle
+            elements.mobileMenuBtn.addEventListener('click', () => {
+                elements.mobileMenu.classList.toggle('hidden');
+            });
+            
+            // Submit Work Trigger (Forces login then redirects to JotForm)
+            elements.submitWorkTriggers.forEach(trigger => {
+                trigger.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    if (!state.currentUser) {
+                        elements.loginModal.classList.remove('hidden');
+                        alert('You must login to submit a work!');
+                    } else {
+                        // Redirect to JotForm after login
+                        window.open('https://form.jotform.com/251541016830043', '_blank');
+                    }
+                });
+            });
+            
+            // Modal controls
+            elements.closeLoginModal.addEventListener('click', () => elements.loginModal.classList.add('hidden'));
+            elements.closeRegisterModal.addEventListener('click', () => elements.registerModal.classList.add('hidden'));
+            elements.closeDetailModal.addEventListener('click', () => elements.workDetailModal.classList.add('hidden'));
+            
+            elements.switchToRegister.addEventListener('click', (e) => {
+                e.preventDefault();
+                elements.loginModal.classList.add('hidden');
+                elements.registerModal.classList.remove('hidden');
+            });
+            
+            elements.switchToLogin.addEventListener('click', (e) => {
+                e.preventDefault();
+                elements.registerModal.classList.add('hidden');
+                elements.loginModal.classList.remove('hidden');
+            });
+            
+            // Form submissions
+            elements.loginForm.addEventListener('submit', handleLogin);
+            elements.registerForm.addEventListener('submit', handleRegister);
+            
+            // Category tabs (only Style tabs now) - Added filtering logic
+            elements.categoryTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    // Update tab styling
+                    elements.categoryTabs.forEach(t => {
+                        t.classList.remove('active', 'btn-primary');
+                        t.classList.add('btn-outline');
+                    });
+                    tab.classList.add('active', 'btn-primary');
+                    tab.classList.remove('btn-outline');
+                    
+                    // Filter works by category
+                    const category = tab.getAttribute('data-category');
+                    filterWorksByCategory(category);
+                });
+            });
+            
+            // Search (updated to search by style)
+            elements.searchBtn.addEventListener('click', () => {
+                const searchTerm = elements.searchInput.value.toLowerCase().trim();
+                alert(`Searching for: ${searchTerm}`);
+                // In a real app, you would filter and show results here
+            });
+            
+            elements.searchInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    const searchTerm = elements.searchInput.value.toLowerCase().trim();
+                    alert(`Searching for: ${searchTerm}`);
+                }
+            });
+            
+            // Hash navigation
+            window.addEventListener('hashchange', handleHashChange);
+            handleHashChange();
+        }
+
+        // Filter works by category/style
+        function filterWorksByCategory(category) {
+            elements.workCards.forEach(card => {
+                const cardStyle = card.getAttribute('data-style');
+                
+                // Show all works if "all" is selected
+                if (category === 'all') {
+                    card.classList.remove('hidden');
+                } 
+                // Show only matching style
+                else if (cardStyle === category) {
+                    card.classList.remove('hidden');
+                } 
+                // Hide non-matching styles
+                else {
+                    card.classList.add('hidden');
+                }
+            });
+        }
+
+        // Hash Handler
+        function handleHashChange() {
+            const hash = window.location.hash;
+            if (hash === '#login') {
+                elements.loginModal.classList.remove('hidden');
+            } else if (hash === '#register') {
+                elements.registerModal.classList.remove('hidden');
+            }
+        }
+
+        // Login Handler (Role Identification)
+        function handleLogin(e) {
+            e.preventDefault();
+            const email = elements.loginForm['login-email'].value;
+            const password = elements.loginForm['login-password'].value;
+            
+            const user = state.users.find(u => u.email === email && u.password === password);
+            if (user) {
+                state.currentUser = user;
+                localStorage.setItem('writeHereWriteNowCurrentUser', JSON.stringify(user));
+                elements.loginModal.classList.add('hidden');
+                updateUIForLoggedInUser();
+                
+                // Role-specific alerts
+                if (user.role === 'admin') {
+                    alert('Welcome Admin! You have full access to manage the website.');
+                } else {
+                    alert('Login successful! You can now submit your creative works.');
+                }
+            } else {
+                alert('Invalid email or password!');
+            }
+        }
+
+        // Register Handler
+        function handleRegister(e) {
+            e.preventDefault();
+            const name = elements.registerForm['register-name'].value;
+            const email = elements.registerForm['register-email'].value;
+            const password = elements.registerForm['register-password'].value;
+            const confirmPassword = elements.registerForm['register-confirm-password'].value;
+            
+            if (password !== confirmPassword) {
+                alert('Passwords do not match!');
+                return;
+            }
+            
+            if (state.users.find(u => u.email === email)) {
+                alert('Email already registered!');
+                return;
+            }
+            
+            const newUser = {
+                id: Date.now(),
+                name,
+                email,
+                password,
+                role: 'user' // Default to regular user
+            };
+            
+            state.users.push(newUser);
+            localStorage.setItem('writeHereWriteNowUsers', JSON.stringify(state.users));
+            
+            state.currentUser = newUser;
+            localStorage.setItem('writeHereWriteNowCurrentUser', JSON.stringify(newUser));
+            
+            elements.registerModal.classList.add('hidden');
+            updateUIForLoggedInUser();
+            alert('Registration successful! You can now submit your works.');
+        }
+
+        // Update UI for Logged In User
+        function updateUIForLoggedInUser() {
+            // Update auth links
+            elements.authLinks.innerHTML = `
+                <div class="relative group">
+                    <a href="#" class="nav-link flex items-center">
+                        ${state.currentUser.name} (${state.currentUser.role})
+                        <i class="fa fa-chevron-down ml-1 text-xs"></i>
+                    </a>
+                    <div class="absolute right-0 top-full mt-1 hidden group-hover:block bg-gray shadow-lg rounded-md w-48 z-10">
+                        <a href="#" id="logout-btn" class="block px-4 py-2 hover:bg-lightgray/10">Logout</a>
+                    </div>
+                </div>
+            `;
+            
+            elements.mobileAuthLinks.innerHTML = `
+                <div class="px-4 py-2 font-medium">${state.currentUser.name} (${state.currentUser.role})</div>
+                <a href="#" id="mobile-logout-btn" class="px-4 py-2 hover:bg-lightgray/10 rounded-md">Logout</a>
+            `;
+            
+            // Add logout listeners
+            document.getElementById('logout-btn')?.addEventListener('click', handleLogout);
+            document.getElementById('mobile-logout-btn')?.addEventListener('click', handleLogout);
+            
+            // Show admin panel for admin users
+            if (state.currentUser.role === 'admin') {
+                elements.adminReviewerMenu.classList.remove('hidden');
+            }
+        }
+
+        // Logout Handler
+        function handleLogout(e) {
+            e.preventDefault();
+            state.currentUser = null;
+            localStorage.removeItem('writeHereWriteNowCurrentUser');
+            
+            // Reset UI
+            elements.authLinks.innerHTML = `
+                <a href="#login" class="nav-link">Login</a>
+                <a href="#register" class="btn-primary">Register</a>
+            `;
+            
+            elements.mobileAuthLinks.innerHTML = `
+                <a href="#login" class="px-4 py-2 hover:bg-lightgray/10 rounded-md">Login</a>
+                <a href="#register" class="px-4 py-2 bg-yellow text-dark rounded-md">Register</a>
+            `;
+            
+            // Hide admin sections
+            elements.adminReviewerMenu.classList.add('hidden');
+            
+            alert('Logged out successfully!');
+        }
+
+        // Initialize app on DOM load
+        document.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+</html>
