@@ -123,10 +123,26 @@
         .delete-comment-btn {
             @apply text-red-400 hover:text-red-600 transition-all-300 text-xs mt-1;
         }
+        
+        /* Mode indicator label */
+        .mode-indicator {
+            @apply fixed top-0 left-0 right-0 z-50 text-center py-1 text-xs font-medium;
+        }
+        .user-mode {
+            @apply bg-green-800/80 text-white;
+        }
+        .admin-mode-label {
+            @apply bg-yellow-800/80 text-black;
+        }
     </style>
 </head>
-<body class="min-h-screen flex flex-col">
-    <header class="bg-gray shadow-sm sticky top-0 z-50">
+<body class="min-h-screen flex flex-col pt-6"> <!-- Add padding for mode label -->
+    <!-- Mode Indicator Label (Persistent at top) -->
+    <div id="mode-indicator" class="mode-indicator user-mode">
+        <i class="fa fa-user"></i> User Mode
+    </div>
+
+    <header class="bg-gray shadow-sm sticky top-6 z-40"> <!-- Adjust top position for mode label -->
         <nav class="container mx-auto px-4 py-4 flex flex-wrap items-center justify-between">
             <a href="#" class="flex items-center space-x-2">
                 <i class="fa fa-pencil-square-o text-yellow text-2xl"></i>
@@ -450,6 +466,9 @@
             isAdminMode: false
         };
 
+        // Get mode indicator element
+        const modeIndicator = document.getElementById('mode-indicator');
+
         function loadFromLocalStorage(key, defaultValue) {
             const saved = localStorage.getItem(key);
             if (saved) return JSON.parse(saved);
@@ -459,6 +478,22 @@
 
         function saveToLocalStorage(key, data) {
             localStorage.setItem(key, JSON.stringify(data));
+        }
+
+        // Update mode indicator UI
+        function updateModeIndicator() {
+            if (state.isAdminMode) {
+                modeIndicator.className = 'mode-indicator admin-mode-label';
+                modeIndicator.innerHTML = '<i class="fa fa-shield"></i> Admin Mode';
+            } else {
+                modeIndicator.className = 'mode-indicator user-mode';
+                modeIndicator.innerHTML = '<i class="fa fa-user"></i> User Mode';
+            }
+        }
+
+        // Clear admin password field
+        function clearAdminPasswordField() {
+            document.getElementById('admin-password').value = '';
         }
 
         const elements = {
@@ -508,6 +543,10 @@
 
         function initApp() {
             state.currentUser = loadFromLocalStorage(STORAGE_KEYS.CURRENT_USER, null);
+            
+            // Initialize mode indicator
+            updateModeIndicator();
+            
             if (state.currentUser) updateUIForLoggedInUser();
             renderWorks(state.works);
             addEventListeners();
@@ -683,29 +722,46 @@
         }
 
         function enterAdminMode() {
-            // If user is logged in → LOG OUT FIRST
+            // Strict rule: If user is logged in → LOG OUT FIRST
             if (state.currentUser) {
-                handleLogout();
+                handleLogout(true); // Silent logout for admin mode switch
                 alert('You have been logged out to enter Admin Mode.');
             }
+            
+            // Clear password field
+            clearAdminPasswordField();
+            
             state.isAdminMode = true;
             elements.adminUploadSection.classList.remove('hidden');
             elements.mainContent.classList.add('admin-mode');
             renderWorks(state.works);
-            alert('Admin Mode ON');
+            
+            // Update mode indicator
+            updateModeIndicator();
+            
+            alert('Admin Mode activated!');
         }
 
         function exitAdminMode() {
             state.isAdminMode = false;
+            
+            // Clear password field
+            clearAdminPasswordField();
+            
             elements.adminUploadSection.classList.add('hidden');
             elements.mainContent.classList.remove('admin-mode');
             renderWorks(state.works);
+            
+            // Update mode indicator
+            updateModeIndicator();
         }
 
         function addEventListeners() {
             elements.mobileMenuBtn.addEventListener('click', () => elements.mobileMenu.classList.toggle('hidden'));
             
             function openAdminVerify() {
+                // Clear password field before opening modal
+                clearAdminPasswordField();
                 elements.adminPasswordModal.classList.remove('hidden');
             }
             
@@ -713,6 +769,8 @@
             elements.mobileAdminBtn.addEventListener('click', openAdminVerify);
             
             elements.closeAdminModal.addEventListener('click', () => {
+                // Clear password field when closing modal
+                clearAdminPasswordField();
                 elements.adminPasswordModal.classList.add('hidden');
             });
             
@@ -723,6 +781,8 @@
                     enterAdminMode();
                 } else {
                     alert('Wrong password');
+                    // Clear password field on wrong password
+                    clearAdminPasswordField();
                 }
             });
             
@@ -782,30 +842,42 @@
 
         function handleLogin(e) {
             e.preventDefault();
-            // If in admin mode → EXIT FIRST
+            
+            // Strict rule: If in admin mode → EXIT FIRST
             if (state.isAdminMode) {
                 exitAdminMode();
-                alert('Admin Mode turned off for login.');
+                alert('Admin Mode has been disabled to log in to your account.');
             }
             
             const email = elements.loginForm['login-email'].value;
             const pw = elements.loginForm['login-password'].value;
             const user = state.users.find(u => u.email === email && u.password === pw);
-            if (!user) { alert('Invalid login'); return; }
+            
+            if (!user) { 
+                alert('Invalid login credentials'); 
+                return; 
+            }
             
             state.currentUser = user;
             saveToLocalStorage(STORAGE_KEYS.CURRENT_USER, user);
             elements.loginModal.classList.add('hidden');
+            
+            // Update mode indicator (back to user mode)
+            updateModeIndicator();
+            
             updateUIForLoggedInUser();
             renderWorks(state.works);
+            
+            alert(`Welcome back, ${user.name}! You are now in User Mode.`);
         }
 
         function handleRegister(e) {
             e.preventDefault();
-            // If in admin mode → EXIT FIRST
+            
+            // Strict rule: If in admin mode → EXIT FIRST
             if (state.isAdminMode) {
                 exitAdminMode();
-                alert('Admin Mode turned off for register.');
+                alert('Admin Mode has been disabled to create a new account.');
             }
             
             const name = elements.registerForm['register-name'].value.trim();
@@ -813,8 +885,8 @@
             const pw = elements.registerForm['register-password'].value;
             const cpw = elements.registerForm['register-confirm-password'].value;
             
-            if (pw !== cpw) { alert('Password not match'); return; }
-            if (state.users.some(u => u.email === email)) { alert('Email exists'); return; }
+            if (pw !== cpw) { alert('Passwords do not match'); return; }
+            if (state.users.some(u => u.email === email)) { alert('Email already registered'); return; }
             
             const nu = {
                 id: Date.now(),
@@ -824,9 +896,15 @@
             saveToLocalStorage(STORAGE_KEYS.USERS, state.users);
             state.currentUser = nu;
             saveToLocalStorage(STORAGE_KEYS.CURRENT_USER, nu);
+            
+            // Update mode indicator (user mode)
+            updateModeIndicator();
+            
             elements.registerModal.classList.add('hidden');
             updateUIForLoggedInUser();
             renderWorks(state.works);
+            
+            alert(`Registration successful! Welcome, ${name}! You are now in User Mode.`);
         }
 
         function updateUIForLoggedInUser() {
@@ -847,11 +925,20 @@
             document.getElementById('logout-btn').addEventListener('click', handleLogout);
             document.getElementById('mobile-logout-btn').addEventListener('click', handleLogout);
             
-            document.getElementById('admin-btn').addEventListener('click', () => elements.adminPasswordModal.classList.remove('hidden'));
-            document.getElementById('mobile-admin-btn').addEventListener('click', () => elements.adminPasswordModal.classList.remove('hidden'));
+            document.getElementById('admin-btn').addEventListener('click', () => {
+                // Clear password field before opening admin modal
+                clearAdminPasswordField();
+                elements.adminPasswordModal.classList.remove('hidden');
+            });
+            document.getElementById('mobile-admin-btn').addEventListener('click', () => {
+                // Clear password field before opening admin modal
+                clearAdminPasswordField();
+                elements.adminPasswordModal.classList.remove('hidden');
+            });
         }
 
-        function handleLogout() {
+        // Enhanced logout function (silent mode for admin switch)
+        function handleLogout(silent = false) {
             state.currentUser = null;
             localStorage.removeItem(STORAGE_KEYS.CURRENT_USER);
             exitAdminMode();
@@ -868,11 +955,26 @@
             
             elements.adminBtn = document.getElementById('admin-btn');
             elements.mobileAdminBtn = document.getElementById('mobile-admin-btn');
-            elements.adminBtn.addEventListener('click', () => elements.adminPasswordModal.classList.remove('hidden'));
-            elements.mobileAdminBtn.addEventListener('click', () => elements.adminPasswordModal.classList.remove('hidden'));
+            
+            elements.adminBtn.addEventListener('click', () => {
+                clearAdminPasswordField();
+                elements.adminPasswordModal.classList.remove('hidden');
+            });
+            elements.mobileAdminBtn.addEventListener('click', () => {
+                clearAdminPasswordField();
+                elements.adminPasswordModal.classList.remove('hidden');
+            });
             
             elements.adminReviewerMenu.classList.add('hidden');
+            
+            // Update mode indicator
+            updateModeIndicator();
+            
             renderWorks(state.works);
+            
+            if (!silent) {
+                alert('You have been logged out successfully. Returned to User Mode.');
+            }
         }
 
         document.addEventListener('DOMContentLoaded', initApp);
