@@ -39,9 +39,7 @@
             .content-auto { content-visibility: auto; }
             .text-shadow-sm { text-shadow: 0 1px 2px rgba(0,0,0,0.1); }
             .transition-all-300 { transition: all 300ms ease-in-out; }
-            /* 2 units right shift for placeholder text (1rem = 2 units in Tailwind) */
             .search-input-padding { padding-left: 2rem !important; } 
-            /* Admin mode styling */
             .admin-mode {
                 @apply bg-yellow/10 border border-yellow/30;
             }
@@ -74,13 +72,8 @@
             @apply border border-white text-white px-6 py-2 rounded-md hover:bg-lightgray/10 transition-all-300 font-medium;
         }
         
-        /* Updated Admin Button to Gray */
         .btn-admin {
             @apply bg-lightgray text-white px-4 py-2 rounded-md hover:bg-gray transition-all-300 font-medium ml-2;
-        }
-        
-        .btn-edit {
-            @apply bg-blue-600 text-white px-3 py-1 rounded-md hover:bg-blue-700 transition-all-300 font-medium text-sm;
         }
         
         .btn-delete {
@@ -99,21 +92,10 @@
             @apply px-2 py-1 rounded-full text-xs font-medium;
         }
         
-        /* Admin upload form styling */
         .admin-upload-form {
             @apply bg-gray/80 p-6 rounded-lg mb-8 border border-yellow/50;
         }
         
-        /* Edit modal styling - kept for reference but unused */
-        .edit-modal {
-            @apply fixed inset-0 bg-black/90 flex items-center justify-center z-50;
-        }
-        
-        .edit-modal-content {
-            @apply bg-gray rounded-lg shadow-xl w-full max-w-2xl p-6;
-        }
-        
-        /* Like button styling */
         .like-btn {
             @apply flex items-center gap-1 text-white hover:text-like transition-all-300 px-3 py-1 rounded-md;
         }
@@ -122,7 +104,6 @@
             @apply text-like font-medium;
         }
         
-        /* Comments section styling */
         .comments-section {
             @apply mt-4 border-t border-lightgray/20 pt-4;
         }
@@ -138,10 +119,13 @@
         .comment-text {
             @apply text-white text-sm mt-1;
         }
+        
+        .delete-comment-btn {
+            @apply text-red-400 hover:text-red-600 transition-all-300 text-xs mt-1;
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
-    <!-- Navigation Bar -->
     <header class="bg-gray shadow-sm sticky top-0 z-50">
         <nav class="container mx-auto px-4 py-4 flex flex-wrap items-center justify-between">
             <a href="#" class="flex items-center space-x-2">
@@ -149,22 +133,16 @@
                 <span class="text-xl font-bold text-yellow">Write Here, Write Now</span>
             </a>
             
-            <!-- Desktop Navigation -->
             <div class="hidden md:flex items-center space-x-2" id="main-nav">
                 <a href="#home" class="nav-link">Home</a>
-                
-                <!-- Submit Work Link (Triggers Login if not logged in) -->
                 <a href="#submit-work" class="nav-link submit-work-trigger">Submit Work</a>
                 
-                <!-- Auth Links + Admin Button -->
                 <div id="auth-links" class="flex items-center">
                     <a href="#login" class="nav-link">Login</a>
-                    <!-- Updated Admin Button (Gray) -->
                     <button id="admin-btn" class="btn-admin">ADMIN</button>
                     <a href="#register" class="btn-primary ml-2">Register</a>
                 </div>
                 
-                <!-- Admin Menu (Hidden by default) -->
                 <div id="admin-reviewer-menu" class="hidden group relative">
                     <a href="#" class="nav-link flex items-center">
                         Admin Panel
@@ -178,20 +156,17 @@
                 </div>
             </div>
             
-            <!-- Mobile Menu Button -->
             <button id="mobile-menu-btn" class="md:hidden text-yellow text-xl">
                 <i class="fa fa-bars"></i>
             </button>
         </nav>
         
-        <!-- Mobile Navigation -->
         <div id="mobile-menu" class="md:hidden hidden bg-gray border-t border-lightgray/10">
             <div class="container mx-auto px-4 py-2 flex flex-col space-y-2">
                 <a href="#home" class="px-4 py-2 hover:bg-lightgray/10 rounded-md">Home</a>
                 <a href="#submit-work" class="px-4 py-2 hover:bg-lightgray/10 rounded-md submit-work-trigger">Submit Work</a>
                 <div id="mobile-auth-links" class="flex flex-col space-y-2">
                     <a href="#login" class="px-4 py-2 hover:bg-lightgray/10 rounded-md">Login</a>
-                    <!-- Updated Mobile Admin Button (Gray) -->
                     <button id="mobile-admin-btn" class="btn-admin w-full text-center">ADMIN</button>
                     <a href="#register" class="px-4 py-2 bg-yellow text-dark rounded-md text-center">Register</a>
                 </div>
@@ -199,9 +174,7 @@
         </div>
     </header>
 
-    <!-- Main Content -->
     <main class="flex-grow container mx-auto px-4 py-8" id="main-content">
-        <!-- Home Section -->
         <section id="home" class="py-16 text-center">
             <h1 class="text-4xl md:text-5xl font-bold mb-6 text-yellow">Write Here, Write Now</h1>
             <p class="text-lg md:text-xl text-white max-w-3xl mx-auto mb-8">
@@ -212,15 +185,11 @@
                 <a href="#submit-work" class="btn-secondary submit-work-trigger">Share Your Writing</a>
             </div>
             
-            <!-- Search Bar (Icon + Placeholder both shifted right 2 units) -->
             <div class="mt-12 max-w-2xl mx-auto">
                 <div class="relative">
-                    <!-- Placeholder shifted right 2 units (pl-8 = 2rem = 2 units) -->
                     <input type="text" id="search-input" placeholder="Search works by title, author, or style..." 
                            class="form-input search-input-padding pr-20 py-3 w-full">
-                    <!-- Icon shifted right 2 units (left-2 instead of left-0) -->
                     <i class="fa fa-search absolute left-2 top-1/2 -translate-y-1/2 text-white text-lg"></i>
-                    <!-- Search button with proper spacing -->
                     <button id="search-btn" class="absolute right-3 top-1/2 -translate-y-1/2 bg-yellow text-dark px-5 py-2 rounded-md whitespace-nowrap">
                         Search
                     </button>
@@ -228,7 +197,6 @@
             </div>
         </section>
         
-        <!-- Admin Upload Form (Hidden by default) -->
         <div id="admin-upload-section" class="hidden admin-upload-form max-w-3xl mx-auto">
             <h2 class="text-2xl font-bold text-yellow mb-4">Admin Work Upload</h2>
             <form id="admin-upload-form" class="space-y-4">
@@ -249,7 +217,6 @@
                         <option value="creative-nonfiction">Creative Nonfiction</option>
                     </select>
                 </div>
-                <!-- Changed "Work Description" to "Content" -->
                 <div>
                     <label class="block text-white mb-2" for="work-description">Content</label>
                     <textarea id="work-description" class="form-input h-24" required placeholder="Enter work content"></textarea>
@@ -261,27 +228,17 @@
             </form>
         </div>
         
-        <!-- Browse Works Section (Only Styles) -->
         <section id="browse" class="py-12">
             <h2 class="text-3xl font-bold mb-8 text-yellow">Explore Creative Works</h2>
-            
-            <!-- Only Style Category Tabs (Removed all Genre tabs) -->
             <div class="flex flex-wrap gap-2 mb-8" id="category-tabs">
                 <button class="category-tab btn-primary active" data-category="all">All Works</button>
-                
-                <!-- Only Style Tabs (Removed Genre tabs) -->
                 <button class="category-tab btn-outline" data-category="fiction">Fiction</button>
                 <button class="category-tab btn-outline" data-category="poetry">Poetry</button>
                 <button class="category-tab btn-outline" data-category="creative-nonfiction">Creative Nonfiction</button>
             </div>
-            
-            <!-- Works Grid (Updated to only show Style badges) -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="works-container">
-                <!-- Works will load dynamically via JS -->
-            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="works-container"></div>
         </section>
         
-        <!-- Admin Password Verification Modal (Hidden by default) -->
         <div id="admin-password-modal" class="fixed inset-0 bg-black/90 flex items-center justify-center z-50 hidden">
             <div class="bg-gray rounded-lg shadow-xl w-full max-w-md p-6">
                 <div class="flex justify-between items-center mb-4">
@@ -303,9 +260,6 @@
             </div>
         </div>
         
-        <!-- Edit Work Modal REMOVED (no longer needed) -->
-        
-        <!-- Modals -->
         <div id="login-modal" class="fixed inset-0 bg-black/80 flex items-center justify-center z-50 hidden">
             <div class="bg-gray rounded-lg shadow-xl w-full max-w-md p-6">
                 <div class="flex justify-between items-center mb-4">
@@ -388,7 +342,6 @@
                     <span id="detail-date" class="text-white">Published on Date</span>
                 </div>
                 
-                <!-- Like Button -->
                 <div class="mb-6">
                     <button id="detail-like-btn" class="like-btn" data-id="0">
                         <i class="fa fa-heart-o"></i>
@@ -399,19 +352,13 @@
                 <div id="detail-description" class="mb-6 text-white italic">Work content</div>
                 <div id="detail-content" class="work-content text-white mb-8">Work content</div>
                 
-                <!-- Comments Section -->
                 <div class="comments-section">
                     <h4 class="text-lg font-medium text-yellow mb-3">Comments</h4>
-                    
-                    <!-- Comment Form (Only visible if logged in) -->
                     <div id="comment-form-container" class="mb-4 hidden">
                         <textarea id="comment-text" class="form-input h-20 mb-2" placeholder="Write your comment..."></textarea>
                         <button id="submit-comment-btn" class="btn-primary px-4 py-2 text-sm">Post Comment</button>
                     </div>
-                    
-                    <!-- Comments List -->
                     <div id="comments-list">
-                        <!-- Comments will load dynamically -->
                         <div class="text-center text-lightgray py-4" id="no-comments-message">
                             No comments yet. Be the first to comment!
                         </div>
@@ -421,15 +368,11 @@
         </div>
     </main>
 
-    <!-- Footer with Custom Spacing (Larger gap between Email Support ↔ FAQ) -->
     <footer class="bg-gray text-white py-8">
         <div class="container mx-auto px-4">
-            <!-- Contact & Support Section (Custom Spacing) -->
             <section class="mb-8">
                 <h2 class="text-2xl font-bold text-yellow mb-6">Contact & Support</h2>
-                <!-- Custom grid with different gaps: 16 between Email-FAQ, 8 between FAQ-Response -->
                 <div class="grid grid-cols-1 md:grid-cols-3">
-                    <!-- Email Support -->
                     <div class="p-4 md:mr-16">
                         <h3 class="text-lg font-medium text-yellow mb-3 flex items-center">
                             <i class="fa fa-envelope-o mr-2"></i> Email Support
@@ -439,8 +382,6 @@
                             <a href="mailto:WritehereWritenow2025@outlook.com" class="text-yellow hover:underline">WritehereWritenow2025@outlook.com</a>.
                         </p>
                     </div>
-                    
-                    <!-- FAQ Section (smaller gap to Response Time) -->
                     <div class="p-4 md:mr-8">
                         <h3 class="text-lg font-medium text-yellow mb-3 flex items-center">
                             <i class="fa fa-question-circle-o mr-2"></i> FAQ Section
@@ -450,8 +391,6 @@
                             <a href="#faq" class="text-yellow hover:underline ml-1">Visit FAQ</a>
                         </p>
                     </div>
-                    
-                    <!-- Response Time Guarantee -->
                     <div class="p-4">
                         <h3 class="text-lg font-medium text-yellow mb-3 flex items-center">
                             <i class="fa fa-clock-o mr-2"></i> Response Time Guarantee
@@ -463,7 +402,6 @@
                 </div>
             </section>
             
-            <!-- Original Footer Content -->
             <div class="flex flex-col md:flex-row justify-between items-center">
                 <div class="mb-4 md:mb-0">
                     <div class="flex items-center space-x-2 mb-2">
@@ -480,17 +418,14 @@
                 </div>
             </div>
             
-            <!-- Copyright -->
             <div class="border-t border-lightgray/30 mt-6 pt-6 text-center text-lightgray text-sm">
                 <p>&copy; 2024 Write Here, Write Now. All rights reserved.</p>
             </div>
         </div>
     </footer>
 
-    <!-- JavaScript -->
     <script>
-        // Global Constants
-        const ADMIN_PASSWORD = "AAundgreelya"; // Admin Password
+        const ADMIN_PASSWORD = "AAundgreelya";
         const STORAGE_KEYS = {
             USERS: 'writeHereWriteNowUsers',
             CURRENT_USER: 'writeHereWriteNowCurrentUser',
@@ -499,7 +434,6 @@
             COMMENTS: 'writeHereWriteNowComments'
         };
 
-        // Global State Management - Ensure Data Persistence
         const state = {
             currentUser: null,
             users: loadFromLocalStorage(STORAGE_KEYS.USERS, [
@@ -507,53 +441,27 @@
                 { id: 2, name: 'Regular User', email: 'user@writeherewenow.com', password: 'user123', role: 'user' }
             ]),
             works: loadFromLocalStorage(STORAGE_KEYS.WORKS, [
-                // Default Work Data
-                {
-                    id: 1,
-                    title: 'The Hidden Key',
-                    author: 'Regular User',
-                    style: 'fiction',
-                    description: 'A mysterious key leads to a decades-old secret that changes everything for the small town detective.'
-                },
-                {
-                    id: 2,
-                    title: 'Whispers of Love',
-                    author: 'Regular User',
-                    style: 'poetry',
-                    description: 'A collection of poems about finding love in unexpected places and the beauty of human connection.'
-                },
-                {
-                    id: 3,
-                    title: 'Echoes of War',
-                    author: 'Regular User',
-                    style: 'creative-nonfiction',
-                    description: 'A true story of a soldier\'s journey through WWII and the lasting impact on his family for generations.'
-                }
+                { id: 1, title: 'The Hidden Key', author: 'Regular User', style: 'fiction', description: 'Sample description.' },
+                { id: 2, title: 'Whispers of Love', author: 'Regular User', style: 'poetry', description: 'Sample description.' },
+                { id: 3, title: 'Echoes of War', author: 'Regular User', style: 'creative-nonfiction', description: 'Sample description.' }
             ]),
-            likes: loadFromLocalStorage(STORAGE_KEYS.LIKES, {}), // Format: {workId: {userId: true, ...}, ...}
-            comments: loadFromLocalStorage(STORAGE_KEYS.COMMENTS, {}), // Format: {workId: [{id, userId, userName, text, date}, ...], ...}
-            isAdminMode: false // Admin Mode State
+            likes: loadFromLocalStorage(STORAGE_KEYS.LIKES, {}),
+            comments: loadFromLocalStorage(STORAGE_KEYS.COMMENTS, {}),
+            isAdminMode: false
         };
 
-        // Generic Local Storage Load Function
         function loadFromLocalStorage(key, defaultValue) {
-            const savedData = localStorage.getItem(key);
-            if (savedData) {
-                return JSON.parse(savedData);
-            } else {
-                saveToLocalStorage(key, defaultValue);
-                return defaultValue;
-            }
+            const saved = localStorage.getItem(key);
+            if (saved) return JSON.parse(saved);
+            saveToLocalStorage(key, defaultValue);
+            return defaultValue;
         }
 
-        // Generic Local Storage Save Function
         function saveToLocalStorage(key, data) {
             localStorage.setItem(key, JSON.stringify(data));
         }
 
-        // DOM Elements
         const elements = {
-            // Navigation
             mobileMenuBtn: document.getElementById('mobile-menu-btn'),
             mobileMenu: document.getElementById('mobile-menu'),
             authLinks: document.getElementById('auth-links'),
@@ -562,18 +470,12 @@
             submitWorkTriggers: document.querySelectorAll('.submit-work-trigger'),
             adminBtn: document.getElementById('admin-btn'),
             mobileAdminBtn: document.getElementById('mobile-admin-btn'),
-            
-            // Admin Elements
             adminPasswordModal: document.getElementById('admin-password-modal'),
             adminPasswordForm: document.getElementById('admin-password-form'),
             closeAdminModal: document.getElementById('close-admin-modal'),
             adminUploadSection: document.getElementById('admin-upload-section'),
             adminUploadForm: document.getElementById('admin-upload-form'),
             cancelUpload: document.getElementById('cancel-upload'),
-            
-            // Edit Modal Elements REMOVED (no longer needed)
-            
-            // Modals
             loginModal: document.getElementById('login-modal'),
             registerModal: document.getElementById('register-modal'),
             workDetailModal: document.getElementById('work-detail-modal'),
@@ -582,19 +484,13 @@
             closeDetailModal: document.getElementById('close-detail-modal'),
             switchToRegister: document.getElementById('switch-to-register'),
             switchToLogin: document.getElementById('switch-to-login'),
-            
-            // Forms
             loginForm: document.getElementById('login-form'),
             registerForm: document.getElementById('register-form'),
-            
-            // Content
             categoryTabs: document.querySelectorAll('.category-tab'),
             searchInput: document.getElementById('search-input'),
             searchBtn: document.getElementById('search-btn'),
             worksContainer: document.getElementById('works-container'),
             mainContent: document.getElementById('main-content'),
-            
-            // Detail Modal
             detailTitle: document.getElementById('detail-title'),
             detailStyle: document.getElementById('detail-style'),
             detailAuthor: document.getElementById('detail-author'),
@@ -603,8 +499,6 @@
             detailContent: document.getElementById('detail-content'),
             detailLikeBtn: document.getElementById('detail-like-btn'),
             detailLikeCount: document.getElementById('detail-like-count'),
-            
-            // Comments
             commentFormContainer: document.getElementById('comment-form-container'),
             commentText: document.getElementById('comment-text'),
             submitCommentBtn: document.getElementById('submit-comment-btn'),
@@ -612,53 +506,33 @@
             noCommentsMessage: document.getElementById('no-comments-message')
         };
 
-        // Initialize App
         function initApp() {
-            // Load Logged-in User
             state.currentUser = loadFromLocalStorage(STORAGE_KEYS.CURRENT_USER, null);
-            
-            if (state.currentUser) {
-                updateUIForLoggedInUser();
-            }
-            
-            // Render Works List
+            if (state.currentUser) updateUIForLoggedInUser();
             renderWorks(state.works);
-            
-            // Add Event Listeners
             addEventListeners();
         }
 
-        // Render Works List
         function renderWorks(worksToRender) {
-            // Clear Container
             elements.worksContainer.innerHTML = '';
-            
-            // Render Works
             worksToRender.forEach(work => {
-                // Calculate like count for the work
                 const likeCount = state.likes[work.id] ? Object.keys(state.likes[work.id]).length : 0;
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.dataset.id = work.id;
                 
-                const workCard = document.createElement('div');
-                workCard.className = 'card';
-                workCard.setAttribute('data-style', work.style);
-                workCard.setAttribute('data-id', work.id);
-                
-                // Admin actions - ONLY DELETE button (removed edit)
                 const adminActions = state.isAdminMode ? `
-                    <div class="flex gap-2 mt-2">
-                        <button class="btn-delete delete-work-btn" data-id="${work.id}">
-                            <i class="fa fa-trash mr-1"></i> Delete
-                        </button>
-                    </div>
-                ` : '';
+                <div class="flex gap-2 mt-2">
+                    <button class="btn-delete delete-work-btn" data-id="${work.id}">Delete</button>
+                </div>` : '';
                 
-                workCard.innerHTML = `
+                card.innerHTML = `
                     <div class="flex justify-between items-start mb-2">
                         <h3 class="text-xl font-bold text-yellow">${work.title}</h3>
                         <span class="badge bg-lightgray/20 text-white">Approved</span>
                     </div>
                     <div class="mb-3 flex flex-wrap gap-2">
-                        <span class="badge bg-lightgray/20 text-yellow">${work.style.charAt(0).toUpperCase() + work.style.slice(1).replace('-', ' ')}</span>
+                        <span class="badge bg-lightgray/20 text-yellow">${work.style}</span>
                         <span class="text-white text-sm">By ${work.author}</span>
                     </div>
                     <p class="text-white mb-4 line-clamp-3">${work.description}</p>
@@ -671,96 +545,55 @@
                     </div>
                     ${adminActions}
                 `;
-                elements.worksContainer.appendChild(workCard);
+                elements.worksContainer.appendChild(card);
             });
-            
-            // Add event listeners to delete buttons if in admin mode (removed edit button listeners)
-            if (state.isAdminMode) {
-                document.querySelectorAll('.delete-work-btn').forEach(btn => {
-                    btn.addEventListener('click', () => deleteWork(parseInt(btn.getAttribute('data-id'))));
-                });
-            }
-            
-            // Add event listeners to like buttons
+
+            document.querySelectorAll('.delete-work-btn').forEach(btn => {
+                btn.addEventListener('click', () => deleteWork(+btn.dataset.id));
+            });
             document.querySelectorAll('.like-btn').forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     e.preventDefault();
-                    const workId = parseInt(btn.getAttribute('data-id'));
-                    handleLikeClick(workId, btn);
+                    handleLikeClick(+btn.dataset.id, btn);
                 });
             });
-            
-            // Add event listeners to view work buttons
             document.querySelectorAll('.view-work-btn').forEach(btn => {
-                btn.addEventListener('click', () => openWorkDetailModal(parseInt(btn.getAttribute('data-id'))));
+                btn.addEventListener('click', () => openWorkDetailModal(+btn.dataset.id));
             });
-            
-            // Update Work Cards Reference
-            elements.workCards = document.querySelectorAll('.card');
         }
 
-        // Check if current user liked a work
         function isWorkLiked(workId) {
             if (!state.currentUser) return false;
-            return state.likes[workId] && state.likes[workId][state.currentUser.id];
+            return state.likes[workId]?.[state.currentUser.id];
         }
 
-        // Handle Like Click
-        function handleLikeClick(workId, btnElement) {
-            // Require login to like
-            if (!state.currentUser) {
-                elements.loginModal.classList.remove('hidden');
-                alert('You must login to like a work!');
-                return;
-            }
-            
-            // Initialize likes object if needed
-            if (!state.likes[workId]) {
-                state.likes[workId] = {};
-            }
-            
-            // Toggle like status
+        function handleLikeClick(workId, btn) {
+            if (!state.currentUser) { elements.loginModal.classList.remove('hidden'); return; }
+            if (!state.likes[workId]) state.likes[workId] = {};
             if (state.likes[workId][state.currentUser.id]) {
-                // Remove like
                 delete state.likes[workId][state.currentUser.id];
-                btnElement.classList.remove('liked');
-                btnElement.querySelector('i').className = 'fa fa-heart-o';
+                btn.querySelector('i').className = 'fa fa-heart-o';
             } else {
-                // Add like
                 state.likes[workId][state.currentUser.id] = true;
-                btnElement.classList.add('liked');
-                btnElement.querySelector('i').className = 'fa fa-heart';
+                btn.querySelector('i').className = 'fa fa-heart';
             }
-            
-            // Update like count display
-            const likeCount = Object.keys(state.likes[workId]).length;
-            btnElement.querySelector('span').textContent = likeCount;
-            
-            // Save to localStorage
+            const cnt = Object.keys(state.likes[workId]).length;
+            btn.querySelector('span').textContent = cnt;
             saveToLocalStorage(STORAGE_KEYS.LIKES, state.likes);
         }
 
-        // Open Work Detail Modal
         function openWorkDetailModal(workId) {
-            const work = state.works.find(w => w.id === workId);
-            if (!work) return;
-            
-            // Populate detail modal
-            elements.detailTitle.textContent = work.title;
-            elements.detailStyle.textContent = work.style.charAt(0).toUpperCase() + work.style.slice(1).replace('-', ' ');
-            elements.detailAuthor.textContent = `By ${work.author}`;
-            elements.detailDate.textContent = new Date().toLocaleDateString('en-US', { 
-                year: 'numeric', month: 'long', day: 'numeric' 
-            });
-            elements.detailDescription.textContent = work.description;
-            elements.detailContent.textContent = `This is the full content of "${work.title}". ${work.description} This sample content represents the complete creative work that users can read in full.`;
-            
-            // Update like button in detail modal
+            const w = state.works.find(x => x.id === workId);
+            if (!w) return;
+            elements.detailTitle.textContent = w.title;
+            elements.detailStyle.textContent = w.style;
+            elements.detailAuthor.textContent = `By ${w.author}`;
+            elements.detailDate.textContent = new Date().toLocaleDateString();
+            elements.detailDescription.textContent = w.description;
+            elements.detailContent.textContent = w.description;
             const likeCount = state.likes[workId] ? Object.keys(state.likes[workId]).length : 0;
-            elements.detailLikeBtn.setAttribute('data-id', workId);
+            elements.detailLikeBtn.dataset.id = workId;
             elements.detailLikeCount.textContent = likeCount;
-            
-            // Update like button appearance
             if (isWorkLiked(workId)) {
                 elements.detailLikeBtn.classList.add('liked');
                 elements.detailLikeBtn.querySelector('i').className = 'fa fa-heart';
@@ -768,481 +601,280 @@
                 elements.detailLikeBtn.classList.remove('liked');
                 elements.detailLikeBtn.querySelector('i').className = 'fa fa-heart-o';
             }
-            
-            // Show/hide comment form
-            if (state.currentUser) {
-                elements.commentFormContainer.classList.remove('hidden');
-            } else {
-                elements.commentFormContainer.classList.add('hidden');
-            }
-            
-            // Load comments
+            if (state.currentUser) elements.commentFormContainer.classList.remove('hidden');
+            else elements.commentFormContainer.classList.add('hidden');
             loadCommentsForWork(workId);
-            
-            // Show detail modal
             elements.workDetailModal.classList.remove('hidden');
         }
 
-        // Load Comments for a Work
         function loadCommentsForWork(workId) {
             elements.commentsList.innerHTML = '';
-            const comments = state.comments[workId] || [];
-            
-            if (comments.length === 0) {
-                // Show no comments message
-                const noCommentsMsg = document.createElement('div');
-                noCommentsMsg.className = 'text-center text-lightgray py-4';
-                noCommentsMsg.textContent = 'No comments yet. Be the first to comment!';
-                elements.commentsList.appendChild(noCommentsMsg);
-            } else {
-                // Sort comments by date (newest first)
-                const sortedComments = [...comments].sort((a, b) => new Date(b.date) - new Date(a.date));
-                
-                // Render comments
-                sortedComments.forEach(comment => {
-                    const commentCard = document.createElement('div');
-                    commentCard.className = 'comment-card';
-                    commentCard.innerHTML = `
-                        <div class="comment-author">${comment.userName}</div>
-                        <div class="comment-text">${comment.text}</div>
-                        <div class="text-xs text-lightgray mt-2">${new Date(comment.date).toLocaleString()}</div>
-                    `;
-                    elements.commentsList.appendChild(commentCard);
-                });
-            }
-            
-            // Set up submit comment button
-            elements.submitCommentBtn.onclick = () => submitComment(workId);
-        }
-
-        // Submit Comment
-        function submitComment(workId) {
-            const commentText = elements.commentText.value.trim();
-            
-            if (!commentText) {
-                alert('Please enter a comment!');
+            const cs = state.comments[workId] || [];
+            if (cs.length === 0) {
+                elements.commentsList.innerHTML = '<div class="text-center py-4 text-gray-400">No comments yet.</div>';
                 return;
             }
-            
-            // Create new comment
-            const newComment = {
+            cs.sort((a,b) => new Date(b.date) - new Date(a.date)).forEach(c => {
+                const del = state.isAdminMode ? `<button class="delete-comment-btn" data-w="${workId}" data-c="${c.id}">Delete Comment</button>` : '';
+                const div = document.createElement('div');
+                div.className = 'comment-card';
+                div.innerHTML = `
+                    <div class="comment-author">${c.userName}</div>
+                    <div class="comment-text">${c.text}</div>
+                    <div class="text-xs text-gray-400">${new Date(c.date).toLocaleString()}</div>
+                    ${del}
+                `;
+                elements.commentsList.appendChild(div);
+            });
+            document.querySelectorAll('.delete-comment-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    deleteComment(+btn.dataset.w, +btn.dataset.c);
+                });
+            });
+        }
+
+        function deleteComment(workId, cid) {
+            if (!confirm('Delete this comment?')) return;
+            state.comments[workId] = state.comments[workId].filter(x => x.id !== cid);
+            saveToLocalStorage(STORAGE_KEYS.COMMENTS, state.comments);
+            loadCommentsForWork(workId);
+        }
+
+        function submitComment(workId) {
+            const t = elements.commentText.value.trim();
+            if (!t) { alert('Please enter comment'); return; }
+            const c = {
                 id: Date.now(),
                 userId: state.currentUser.id,
                 userName: state.currentUser.name,
-                text: commentText,
+                text: t,
                 date: new Date().toISOString()
             };
-            
-            // Initialize comments array if needed
-            if (!state.comments[workId]) {
-                state.comments[workId] = [];
-            }
-            
-            // Add comment
-            state.comments[workId].push(newComment);
-            
-            // Save to localStorage
+            if (!state.comments[workId]) state.comments[workId] = [];
+            state.comments[workId].push(c);
             saveToLocalStorage(STORAGE_KEYS.COMMENTS, state.comments);
-            
-            // Reload comments
-            loadCommentsForWork(workId);
-            
-            // Clear comment text
             elements.commentText.value = '';
-            
-            alert('Comment posted successfully!');
+            loadCommentsForWork(workId);
         }
 
-        // Add New Work (Publish)
-        function addNewWork(workData) {
-            const newWork = {
-                id: Date.now(), // Unique ID
-                title: workData.title,
-                author: workData.author,
-                style: workData.style,
-                description: workData.description // Still using description key for data consistency
-            };
-            
-            // Add to Works List
-            state.works.push(newWork);
-            
-            // Save to Local Storage
+        function addNewWork(data) {
+            state.works.push({
+                id: Date.now(),
+                title: data.title,
+                author: data.author,
+                style: data.style,
+                description: data.description
+            });
             saveToLocalStorage(STORAGE_KEYS.WORKS, state.works);
-            
-            // Re-render
-            renderWorks(state.works);
-            
-            // Reset Form
             elements.adminUploadForm.reset();
-            
-            // Success Notification
-            alert('Work published successfully!');
+            renderWorks(state.works);
+            alert('Published');
         }
 
-        // Delete Work with Confirmation
-        function deleteWork(workId) {
-            // Confirm deletion
-            const confirmDelete = confirm('Are you sure you want to delete this work? This action cannot be undone.');
-            if (!confirmDelete) return;
-            
-            // Filter out the work to delete
-            state.works = state.works.filter(w => w.id !== workId);
-            
-            // Also remove associated likes and comments
-            delete state.likes[workId];
-            delete state.comments[workId];
-            
-            // Save to Local Storage
+        function deleteWork(id) {
+            if (!confirm('Delete work?')) return;
+            state.works = state.works.filter(x => x.id !== id);
+            delete state.likes[id];
+            delete state.comments[id];
             saveToLocalStorage(STORAGE_KEYS.WORKS, state.works);
             saveToLocalStorage(STORAGE_KEYS.LIKES, state.likes);
             saveToLocalStorage(STORAGE_KEYS.COMMENTS, state.comments);
-            
-            // Re-render
             renderWorks(state.works);
-            
-            // Success Notification
-            alert('Work deleted successfully!');
         }
 
-        // Enter Admin Mode
         function enterAdminMode() {
+            // If user is logged in → LOG OUT FIRST
+            if (state.currentUser) {
+                handleLogout();
+                alert('You have been logged out to enter Admin Mode.');
+            }
             state.isAdminMode = true;
-            // Show Upload Form
             elements.adminUploadSection.classList.remove('hidden');
-            // Add Admin Mode Styling
             elements.mainContent.classList.add('admin-mode');
-            // Re-render works to show delete buttons
             renderWorks(state.works);
-            // Notification
-            alert('Admin mode activated! You can now publish and delete works.');
+            alert('Admin Mode ON');
         }
 
-        // Exit Admin Mode
         function exitAdminMode() {
             state.isAdminMode = false;
-            // Hide Upload Form
             elements.adminUploadSection.classList.add('hidden');
-            // Remove Admin Styling
             elements.mainContent.classList.remove('admin-mode');
-            // Re-render works to hide delete buttons
             renderWorks(state.works);
         }
 
-        // Event Listeners
         function addEventListeners() {
-            // Mobile Menu Toggle
-            elements.mobileMenuBtn.addEventListener('click', () => {
-                elements.mobileMenu.classList.toggle('hidden');
-            });
+            elements.mobileMenuBtn.addEventListener('click', () => elements.mobileMenu.classList.toggle('hidden'));
             
-            // Admin Button Click (Gray button)
-            elements.adminBtn.addEventListener('click', () => {
+            function openAdminVerify() {
                 elements.adminPasswordModal.classList.remove('hidden');
-            });
-            elements.mobileAdminBtn.addEventListener('click', () => {
-                elements.adminPasswordModal.classList.remove('hidden');
-            });
+            }
             
-            // Close Admin Verification Modal
+            elements.adminBtn.addEventListener('click', openAdminVerify);
+            elements.mobileAdminBtn.addEventListener('click', openAdminVerify);
+            
             elements.closeAdminModal.addEventListener('click', () => {
                 elements.adminPasswordModal.classList.add('hidden');
             });
             
-            // Admin Password Verification
-            elements.adminPasswordForm.addEventListener('submit', (e) => {
+            elements.adminPasswordForm.addEventListener('submit', e => {
                 e.preventDefault();
-                const enteredPassword = document.getElementById('admin-password').value;
-                
-                if (enteredPassword === ADMIN_PASSWORD) {
-                    // Password Correct
+                if (document.getElementById('admin-password').value === ADMIN_PASSWORD) {
                     elements.adminPasswordModal.classList.add('hidden');
                     enterAdminMode();
                 } else {
-                    // Password Incorrect
-                    alert('Incorrect admin password! Please try again.');
+                    alert('Wrong password');
                 }
             });
             
-            // Admin Upload Form Submit (Publish Work)
-            elements.adminUploadForm.addEventListener('submit', (e) => {
+            elements.adminUploadForm.addEventListener('submit', e => {
                 e.preventDefault();
-                
-                const workData = {
+                addNewWork({
                     title: document.getElementById('work-title').value,
                     author: document.getElementById('work-author').value,
                     style: document.getElementById('work-style').value,
-                    description: document.getElementById('work-description').value // Content field
-                };
-                
-                addNewWork(workData);
+                    description: document.getElementById('work-description').value
+                });
             });
             
-            // Cancel Upload
             elements.cancelUpload.addEventListener('click', () => {
                 elements.adminUploadForm.reset();
                 exitAdminMode();
             });
             
-            // Removed Edit Modal Event Listeners
-            
-            // Submit Work Trigger (Redirect to Login if not logged in)
-            elements.submitWorkTriggers.forEach(trigger => {
-                trigger.addEventListener('click', (e) => {
+            elements.submitWorkTriggers.forEach(t => {
+                t.addEventListener('click', e => {
                     e.preventDefault();
-                    if (!state.currentUser) {
-                        elements.loginModal.classList.remove('hidden');
-                        alert('You must login to submit a work!');
-                    } else {
-                        window.open('https://form.jotform.com/251541016830043', '_blank');
-                    }
+                    if (!state.currentUser) elements.loginModal.classList.remove('hidden');
                 });
             });
             
-            // Modal Controls
             elements.closeLoginModal.addEventListener('click', () => elements.loginModal.classList.add('hidden'));
             elements.closeRegisterModal.addEventListener('click', () => elements.registerModal.classList.add('hidden'));
             elements.closeDetailModal.addEventListener('click', () => elements.workDetailModal.classList.add('hidden'));
             
-            elements.switchToRegister.addEventListener('click', (e) => {
+            elements.switchToRegister.addEventListener('click', e => {
                 e.preventDefault();
                 elements.loginModal.classList.add('hidden');
                 elements.registerModal.classList.remove('hidden');
             });
-            
-            elements.switchToLogin.addEventListener('click', (e) => {
+            elements.switchToLogin.addEventListener('click', e => {
                 e.preventDefault();
                 elements.registerModal.classList.add('hidden');
                 elements.loginModal.classList.remove('hidden');
             });
             
-            // Form Submissions
             elements.loginForm.addEventListener('submit', handleLogin);
             elements.registerForm.addEventListener('submit', handleRegister);
             
-            // Category Tab Clicks (Add Filter Logic)
             elements.categoryTabs.forEach(tab => {
                 tab.addEventListener('click', () => {
-                    // Update Tab Styles
                     elements.categoryTabs.forEach(t => {
-                        t.classList.remove('active', 'btn-primary');
+                        t.classList.remove('btn-primary');
                         t.classList.add('btn-outline');
                     });
-                    tab.classList.add('active', 'btn-primary');
                     tab.classList.remove('btn-outline');
-                    
-                    // Filter Works
-                    const category = tab.getAttribute('data-category');
-                    filterWorksByCategory(category);
+                    tab.classList.add('btn-primary');
+                    const cat = tab.dataset.category;
+                    renderWorks(cat === 'all' ? state.works : state.works.filter(w => w.style === cat));
                 });
             });
-            
-            // Search Functionality
-            elements.searchBtn.addEventListener('click', () => {
-                const searchTerm = elements.searchInput.value.toLowerCase().trim();
-                alert(`Searching for: ${searchTerm}`);
-                // Extendable: Implement search filter logic
-            });
-            
-            elements.searchInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    const searchTerm = elements.searchInput.value.toLowerCase().trim();
-                    alert(`Searching for: ${searchTerm}`);
-                }
-            });
-            
-            // Hash Navigation
-            window.addEventListener('hashchange', handleHashChange);
-            handleHashChange();
         }
 
-        // Filter Works by Category
-        function filterWorksByCategory(category) {
-            let filteredWorks;
-            
-            if (category === 'all') {
-                filteredWorks = state.works;
-            } else {
-                filteredWorks = state.works.filter(work => work.style === category);
-            }
-            
-            renderWorks(filteredWorks);
-        }
-
-        // Hash Handling
-        function handleHashChange() {
-            const hash = window.location.hash;
-            if (hash === '#login') {
-                elements.loginModal.classList.remove('hidden');
-            } else if (hash === '#register') {
-                elements.registerModal.classList.remove('hidden');
-            }
-        }
-
-        // Login Handling
         function handleLogin(e) {
             e.preventDefault();
-            const email = elements.loginForm['login-email'].value;
-            const password = elements.loginForm['login-password'].value;
-            
-            const user = state.users.find(u => u.email === email && u.password === password);
-            if (user) {
-                state.currentUser = user;
-                saveToLocalStorage(STORAGE_KEYS.CURRENT_USER, user);
-                elements.loginModal.classList.add('hidden');
-                updateUIForLoggedInUser();
-                
-                if (user.role === 'admin') {
-                    alert('Welcome Admin! You have full access to manage the website.');
-                } else {
-                    alert('Login successful! You can now submit your creative works, like and comment on others\' works.');
-                }
-                
-                // Re-render works to show liked status
-                renderWorks(state.works);
-            } else {
-                alert('Invalid email or password!');
+            // If in admin mode → EXIT FIRST
+            if (state.isAdminMode) {
+                exitAdminMode();
+                alert('Admin Mode turned off for login.');
             }
+            
+            const email = elements.loginForm['login-email'].value;
+            const pw = elements.loginForm['login-password'].value;
+            const user = state.users.find(u => u.email === email && u.password === pw);
+            if (!user) { alert('Invalid login'); return; }
+            
+            state.currentUser = user;
+            saveToLocalStorage(STORAGE_KEYS.CURRENT_USER, user);
+            elements.loginModal.classList.add('hidden');
+            updateUIForLoggedInUser();
+            renderWorks(state.works);
         }
 
-        // Register Handling with Unique Username Validation
         function handleRegister(e) {
             e.preventDefault();
+            // If in admin mode → EXIT FIRST
+            if (state.isAdminMode) {
+                exitAdminMode();
+                alert('Admin Mode turned off for register.');
+            }
+            
             const name = elements.registerForm['register-name'].value.trim();
             const email = elements.registerForm['register-email'].value;
-            const password = elements.registerForm['register-password'].value;
-            const confirmPassword = elements.registerForm['register-confirm-password'].value;
+            const pw = elements.registerForm['register-password'].value;
+            const cpw = elements.registerForm['register-confirm-password'].value;
             
-            // Validate Password
-            if (password !== confirmPassword) {
-                alert('Passwords do not match!');
-                return;
-            }
+            if (pw !== cpw) { alert('Password not match'); return; }
+            if (state.users.some(u => u.email === email)) { alert('Email exists'); return; }
             
-            // Check if Username Already Exists (Case-insensitive)
-            const usernameExists = state.users.some(u => 
-                u.name.toLowerCase() === name.toLowerCase()
-            );
-            
-            if (usernameExists) {
-                alert('This username is already taken! Please choose a different one.');
-                return;
-            }
-            
-            // Check if Email Already Registered
-            if (state.users.find(u => u.email === email)) {
-                alert('Email already registered!');
-                return;
-            }
-            
-            // Create New User
-            const newUser = {
+            const nu = {
                 id: Date.now(),
-                name,
-                email,
-                password,
-                role: 'user'
+                name, email, password: pw, role: 'user'
             };
-            
-            // Add to Users List
-            state.users.push(newUser);
+            state.users.push(nu);
             saveToLocalStorage(STORAGE_KEYS.USERS, state.users);
-            
-            // Auto-login New User
-            state.currentUser = newUser;
-            saveToLocalStorage(STORAGE_KEYS.CURRENT_USER, newUser);
-            
+            state.currentUser = nu;
+            saveToLocalStorage(STORAGE_KEYS.CURRENT_USER, nu);
             elements.registerModal.classList.add('hidden');
             updateUIForLoggedInUser();
-            alert('Registration successful! You can now submit your works, like and comment on others\' works.');
+            renderWorks(state.works);
         }
 
-        // Update UI for Logged-in User
         function updateUIForLoggedInUser() {
-            // Update Desktop Auth Links
             elements.authLinks.innerHTML = `
-                <div class="relative group flex items-center">
-                    <a href="#" class="nav-link flex items-center">
-                        ${state.currentUser.name} (${state.currentUser.role})
-                        <i class="fa fa-chevron-down ml-1 text-xs"></i>
-                    </a>
-                    <!-- Updated Admin Button (Gray) -->
-                    <button id="admin-btn" class="btn-admin ml-2">ADMIN</button>
-                    <div class="absolute right-0 top-full mt-1 hidden group-hover:block bg-gray shadow-lg rounded-md w-48 z-10">
-                        <a href="#" id="logout-btn" class="block px-4 py-2 hover:bg-lightgray/10">Logout</a>
-                    </div>
+            <div class="relative group flex items-center">
+                <a href="#" class="nav-link">${state.currentUser.name}</a>
+                <button id="admin-btn" class="btn-admin ml-2">ADMIN</button>
+                <div class="absolute right-0 top-full hidden group-hover:block bg-gray shadow-md rounded w-48 z-10">
+                    <a href="#" id="logout-btn" class="block px-4 py-2 hover:bg-gray/50">Logout</a>
                 </div>
-            `;
+            </div>`;
             
-            // Update Mobile Auth Links
             elements.mobileAuthLinks.innerHTML = `
-                <div class="px-4 py-2 font-medium">${state.currentUser.name} (${state.currentUser.role})</div>
-                <!-- Updated Mobile Admin Button (Gray) -->
-                <button id="mobile-admin-btn" class="btn-admin w-full text-center">ADMIN</button>
-                <a href="#" id="mobile-logout-btn" class="px-4 py-2 hover:bg-lightgray/10 rounded-md text-center">Logout</a>
-            `;
+            <div class="px-4 py-2">${state.currentUser.name}</div>
+            <button id="mobile-admin-btn" class="btn-admin w-full">ADMIN</button>
+            <a href="#" id="mobile-logout-btn" class="block px-4 py-2 hover:bg-gray/50 text-center">Logout</a>`;
             
-            // Add Logout Event Listeners
-            document.getElementById('logout-btn')?.addEventListener('click', handleLogout);
-            document.getElementById('mobile-logout-btn')?.addEventListener('click', handleLogout);
+            document.getElementById('logout-btn').addEventListener('click', handleLogout);
+            document.getElementById('mobile-logout-btn').addEventListener('click', handleLogout);
             
-            // Rebind Admin Button Events (Gray button)
-            document.getElementById('admin-btn')?.addEventListener('click', () => {
-                elements.adminPasswordModal.classList.remove('hidden');
-            });
-            document.getElementById('mobile-admin-btn')?.addEventListener('click', () => {
-                elements.adminPasswordModal.classList.remove('hidden');
-            });
-            
-            // Show Admin Panel for Admin Users
-            if (state.currentUser.role === 'admin') {
-                elements.adminReviewerMenu.classList.remove('hidden');
-            }
+            document.getElementById('admin-btn').addEventListener('click', () => elements.adminPasswordModal.classList.remove('hidden'));
+            document.getElementById('mobile-admin-btn').addEventListener('click', () => elements.adminPasswordModal.classList.remove('hidden'));
         }
 
-        // Logout Handling
-        function handleLogout(e) {
-            e.preventDefault();
+        function handleLogout() {
             state.currentUser = null;
             localStorage.removeItem(STORAGE_KEYS.CURRENT_USER);
-            
-            // Exit Admin Mode
             exitAdminMode();
             
-            // Reset UI
             elements.authLinks.innerHTML = `
-                <a href="#login" class="nav-link">Login</a>
-                <!-- Updated Admin Button (Gray) -->
-                <button id="admin-btn" class="btn-admin">ADMIN</button>
-                <a href="#register" class="btn-primary ml-2">Register</a>
-            `;
+            <a href="#login" class="nav-link">Login</a>
+            <button id="admin-btn" class="btn-admin">ADMIN</button>
+            <a href="#register" class="btn-primary ml-2">Register</a>`;
             
             elements.mobileAuthLinks.innerHTML = `
-                <a href="#login" class="px-4 py-2 hover:bg-lightgray/10 rounded-md">Login</a>
-                <!-- Updated Mobile Admin Button (Gray) -->
-                <button id="mobile-admin-btn" class="btn-admin w-full text-center">ADMIN</button>
-                <a href="#register" class="px-4 py-2 bg-yellow text-dark rounded-md text-center">Register</a>
-            `;
+            <a href="#login" class="px-4 py-2 hover:bg-gray/50">Login</a>
+            <button id="mobile-admin-btn" class="btn-admin w-full">ADMIN</button>
+            <a href="#register" class="px-4 py-2 bg-yellow text-dark rounded-md text-center">Register</a>`;
             
-            // Rebind Admin Button Events (Gray button)
             elements.adminBtn = document.getElementById('admin-btn');
             elements.mobileAdminBtn = document.getElementById('mobile-admin-btn');
-            elements.adminBtn.addEventListener('click', () => {
-                elements.adminPasswordModal.classList.remove('hidden');
-            });
-            elements.mobileAdminBtn.addEventListener('click', () => {
-                elements.adminPasswordModal.classList.remove('hidden');
-            });
+            elements.adminBtn.addEventListener('click', () => elements.adminPasswordModal.classList.remove('hidden'));
+            elements.mobileAdminBtn.addEventListener('click', () => elements.adminPasswordModal.classList.remove('hidden'));
             
-            // Hide Admin Panel
             elements.adminReviewerMenu.classList.add('hidden');
-            
-            // Re-render works to remove liked status
             renderWorks(state.works);
-            
-            alert('Logged out successfully!');
         }
 
-        // Initialize App on Page Load
         document.addEventListener('DOMContentLoaded', initApp);
     </script>
 </body>
