@@ -138,11 +138,6 @@
         .comment-text {
             @apply text-white text-sm mt-1;
         }
-        
-        /* Admin comment delete button */
-        .delete-comment-btn {
-            @apply text-red-400 hover:text-red-600 transition-all-300 text-xs mt-1;
-        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
@@ -807,54 +802,17 @@
                 sortedComments.forEach(comment => {
                     const commentCard = document.createElement('div');
                     commentCard.className = 'comment-card';
-                    
-                    // Add delete button for admins
-                    const deleteButton = (state.isAdminMode || (state.currentUser && state.currentUser.role === 'admin')) 
-                        ? `<button class="delete-comment-btn" data-work-id="${workId}" data-comment-id="${comment.id}">
-                            <i class="fa fa-trash-o"></i> Delete Comment
-                          </button>` 
-                        : '';
-                    
                     commentCard.innerHTML = `
                         <div class="comment-author">${comment.userName}</div>
                         <div class="comment-text">${comment.text}</div>
                         <div class="text-xs text-lightgray mt-2">${new Date(comment.date).toLocaleString()}</div>
-                        ${deleteButton}
                     `;
                     elements.commentsList.appendChild(commentCard);
-                });
-                
-                // Add event listeners to delete comment buttons
-                document.querySelectorAll('.delete-comment-btn').forEach(btn => {
-                    btn.addEventListener('click', () => {
-                        const workId = parseInt(btn.getAttribute('data-work-id'));
-                        const commentId = parseInt(btn.getAttribute('data-comment-id'));
-                        deleteComment(workId, commentId);
-                    });
                 });
             }
             
             // Set up submit comment button
             elements.submitCommentBtn.onclick = () => submitComment(workId);
-        }
-
-        // Delete Comment (Admin only)
-        function deleteComment(workId, commentId) {
-            // Confirm deletion
-            const confirmDelete = confirm('Are you sure you want to delete this comment? This action cannot be undone.');
-            if (!confirmDelete) return;
-            
-            // Filter out the comment to delete
-            state.comments[workId] = state.comments[workId].filter(comment => comment.id !== commentId);
-            
-            // Save to Local Storage
-            saveToLocalStorage(STORAGE_KEYS.COMMENTS, state.comments);
-            
-            // Reload comments
-            loadCommentsForWork(workId);
-            
-            // Success Notification
-            alert('Comment deleted successfully!');
         }
 
         // Submit Comment
@@ -956,7 +914,7 @@
             // Re-render works to show delete buttons
             renderWorks(state.works);
             // Notification
-            alert('Admin mode activated! You can now publish and delete works, and delete any comments.');
+            alert('Admin mode activated! You can now publish and delete works.');
         }
 
         // Exit Admin Mode
@@ -1128,19 +1086,13 @@
             
             const user = state.users.find(u => u.email === email && u.password === password);
             if (user) {
-                // Exit admin mode if active before logging in
-                if (state.isAdminMode) {
-                    exitAdminMode();
-                    alert('Admin mode has been automatically exited for security reasons.');
-                }
-                
                 state.currentUser = user;
                 saveToLocalStorage(STORAGE_KEYS.CURRENT_USER, user);
                 elements.loginModal.classList.add('hidden');
                 updateUIForLoggedInUser();
                 
                 if (user.role === 'admin') {
-                    alert('Welcome Admin! You have full access to manage the website, including deleting comments.');
+                    alert('Welcome Admin! You have full access to manage the website.');
                 } else {
                     alert('Login successful! You can now submit your creative works, like and comment on others\' works.');
                 }
